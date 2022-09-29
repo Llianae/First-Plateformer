@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -17,8 +18,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -38,5 +37,21 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         PlayerBehaviour.instance.Respawn();
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        Debug.Log("Loading Scene: " + sceneName);
+        SceneManager.LoadSceneAsync(sceneName);
+    }
+
+    public IEnumerator LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 }
