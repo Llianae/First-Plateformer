@@ -30,14 +30,9 @@ public class GameManager : MonoBehaviour
         PlayerBehaviour.instance.Death();
         deathCount++;
         deathCountText.text = "Death Count: " + deathCount;
-        StartCoroutine(RespawnPlayer());
-    }
-
-    public IEnumerator RespawnPlayer()
-    {
-        yield return new WaitForSeconds(2f);
         PlayerBehaviour.instance.Respawn();
     }
+
 
     public void LoadScene(string sceneName)
     {

@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         groundCheck = transform.Find("GroundCheck").GetComponent<BoxCollider2D>();
-        spriteRenderer = transform.Find("bonhomme").GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }
 
