@@ -1,15 +1,40 @@
 using UnityEngine;
 
-public class door : MonoBehaviour
+public class Door : MonoBehaviour
 {
+    public Door instance;
     BoxCollider2D doorCollider;
-    public bool isLocked = false;
+    private bool isLocked = false;
 
     public string sceneToLoad;
+
+    public void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
         doorCollider = GetComponent<BoxCollider2D>();
+    }
+
+    void Update()
+    {
+        if (isLocked)
+        {
+            doorCollider.enabled = false;
+        }
+        else
+        {
+            doorCollider.enabled = true;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -20,5 +45,10 @@ public class door : MonoBehaviour
             GameManager.instance.LoadScene(sceneToLoad);
             PlayerBehaviour.instance.Respawn();
         }
+    }
+
+    public void Unlock()
+    {
+        isLocked = false;
     }
 }
