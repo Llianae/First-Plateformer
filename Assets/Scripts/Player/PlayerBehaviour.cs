@@ -15,7 +15,7 @@ public class PlayerBehaviour : MonoBehaviour
             Destroy(gameObject);
         }
 
-        player = GameObject.Find("people");
+        player = this.gameObject;
     }
 
     public void Death()

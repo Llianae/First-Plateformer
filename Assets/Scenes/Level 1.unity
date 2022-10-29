@@ -1066,7 +1066,11 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 993819571}
     m_ColliderPaths:
-    - - X: 90000041
+    - - X: 90000100
+        Y: -40000041
+      - X: 90000100
+        Y: -19999959
+      - X: 90000041
         Y: -19999900
       - X: -90000041
         Y: -19999900
@@ -1078,10 +1082,6 @@ CompositeCollider2D:
         Y: -40000100
       - X: 90000041
         Y: -40000100
-      - X: 90000100
-        Y: -40000041
-      - X: 90000100
-        Y: -19999959
   m_CompositePaths:
     m_Paths:
     - - {x: 8.999974, y: -4.00001}
@@ -1313,7 +1313,7 @@ GameObject:
   - component: {fileID: 1914648052}
   - component: {fileID: 1914648053}
   m_Layer: 0
-  m_Name: people
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1372,8 +1372,8 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
+  m_UseAutoMass: 1
+  m_Mass: 2.0869253
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -1396,6 +1396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
   isGrounded: 0
+  isClimbing: 0
   groundCheck: {fileID: 183121696}
 --- !u!114 &1914648051
 MonoBehaviour:

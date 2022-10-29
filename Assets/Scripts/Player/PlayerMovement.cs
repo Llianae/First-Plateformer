@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -6,11 +7,20 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
-    private float moveSpeed = 5f;
-    private float jumpForce = 8f;
+    private float moveSpeed = 250f;
+    private float climbSpeed = 150f;
+    private float jumpForce = 500f;
+
+    private float horizontalMovement;
+    private float verticalMovement;
+
+    private Vector3 velocity = Vector3.zero;
     public bool isGrounded = true;
+    public bool isClimbing = false;
     private bool isJumping;
     private bool isAllowedToMove = true;
+
+    private Animator animator;
 
     public BoxCollider2D groundCheck;
 
@@ -26,45 +36,76 @@ public class PlayerMovement : MonoBehaviour
         }
 
         groundCheck = transform.Find("GroundCheck").GetComponent<BoxCollider2D>();
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
+        horizontalMovement = Input.GetAxis("Horizontal") * moveSpeed * Time.fixedDeltaTime;
+        verticalMovement = Input.GetAxis("Vertical") * climbSpeed * Time.fixedDeltaTime;
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isJumping = true;
-            isGrounded = false;
+            animator.SetTrigger("jump");
         }
 
+        Flip(rb.velocity.x);
+
+        float characterVelocityX = Mathf.Abs(rb.velocity.x);
+        animator.SetFloat("SpeedX", characterVelocityX);
+        float characterVelocityY = rb.velocity.y;
+        animator.SetFloat("SpeedY", characterVelocityY);
+    }
+
+    void FixedUpdate()
+    {
         if (isAllowedToMove)
         {
-            MovePlayer();
+            MovePlayer(horizontalMovement, verticalMovement);
         }
     }
 
-    private void MovePlayer()
+
+    void MovePlayer(float _horizontalMovement, float _verticalMovement)
     {
-        if (Input.GetKey(KeyCode.D))
+        if (!isClimbing)
         {
-            transform.position += Vector3.right * moveSpeed * Time.deltaTime;
+            Vector3 targetVelocity = new Vector2(_horizontalMovement, rb.velocity.y);
+            rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref velocity, .05f);
+
+            if (isJumping)
+            {
+                rb.AddForce(new Vector2(0f, jumpForce));
+                isJumping = false;
+            }
+        }
+        else
+        {
+            Vector3 targetVelocity = new Vector2(0, _verticalMovement);
+            rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref velocity, .05f);
+        }
+    }
+
+    void Flip(float _velocity)
+    {
+        if (_velocity > 0.1f)
+        {
             spriteRenderer.flipX = false;
         }
-        if (Input.GetKey(KeyCode.Q))
+        else if (_velocity < -0.1f)
         {
-            transform.position += Vector3.right * -moveSpeed * Time.deltaTime;
             spriteRenderer.flipX = true;
         }
     }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
         {
+            animator.SetBool("isGrounded", true);
             isGrounded = true;
         }
     }
@@ -73,6 +114,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
+            animator.SetBool("isGrounded", false);
             isGrounded = false;
         }
     }
@@ -93,5 +135,9 @@ public class PlayerMovement : MonoBehaviour
         transform.position = position;
     }
 
+    public void StartFalling()
+    {
+        //animator.SetTrigger("fall");
+    }
 
 }
